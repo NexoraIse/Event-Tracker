@@ -1,0 +1,79 @@
+{
+  "name": "event-tracker",
+  "version": "1.1.15",
+  "private": true,
+  "main": "dist-electron/main.js",
+  "scripts": {
+    "dev": "concurrently -k \"npm:dev:next\" \"npm:dev:electron\"",
+    "dev:next": "next dev -p 3001",
+    "dev:electron": "wait-on tcp:3001 && npm run build:electron && cross-env ELECTRON_IS_DEV=true electron dist-electron/main.js",
+    "build": "next build && npm run build:electron",
+    "build:electron": "tsc -p tsconfig.electron.json && node -e \"require('dotenv').config(); require('fs').writeFileSync('dist-electron/oauth-config.json', JSON.stringify({ GOOGLE_CLIENT_ID: process.env.GOOGLE_CLIENT_ID }))\"",
+    "start": "next start -p 3001",
+    "electron": "npm run build && cross-env ELECTRON_DISABLE_GPU=1 electron dist-electron/main.js",
+    "desktop": "npm run build && cross-env ELECTRON_DISABLE_GPU=1 electron dist-electron/main.js",
+    "lint": "eslint .",
+    "dist": "npm run build && electron-builder",
+    "dist:win": "npm run build && electron-builder --win -p never",
+    "dist:linux": "npm run build && electron-builder --linux -p never",
+    "dist:mac": "npm run build && electron-builder --mac -p never"
+  },
+  "dependencies": {
+    "better-sqlite3": "^13.0.3",
+    "dotenv": "^18.0.4",
+    "electron-store": "^11.0.2",
+    "googleapis": "^182.0.0",
+    "lucide-react": "^1.48.0",
+    "next": "16.3.6",
+    "react": "19.2.8",
+    "react-dom": "19.2.8",
+    "xlsx": "^0.18.5"
+  },
+  "devDependencies": {
+    "@tailwindcss/postcss": "^4",
+    "@types/better-sqlite3": "^9.6.0",
+    "@types/node": "^20",
+    "@types/react": "^19",
+    "@types/react-dom": "^19",
+    "concurrently": "^10.0.5",
+    "cross-env": "^10.1.0",
+    "electron": "^44.4.5",
+    "electron-builder": "^26.15.3",
+    "eslint": "^9",
+    "eslint-config-next": "16.3.6",
+    "tailwindcss": "^4",
+    "tsx": "^4.23.15",
+    "typescript": "^5",
+    "wait-on": "^9.1.0"
+  },
+  "productName": "Event Tracker",
+  "build": {
+    "appId": "com.ajiet.event-tracker",
+    "productName": "Event Tracker",
+    "mac": {
+      "target": [
+        "dmg"
+      ]
+    },
+    "win": {
+      "target": [
+        "nsis"
+      ]
+    },
+    "linux": {
+      "target": [
+        "AppImage",
+        "rpm",
+        "deb"
+      ]
+    },
+    "asar": false,
+    "icon": "public/eventlogo-removebg-preview.png",
+    "extraResources": []
+  },
+  "author": {
+    "name": "AJIET",
+    "email": "contact@ajiet.edu.in"
+  },
+  "description": "Event Tracker Dashboard"
+}
